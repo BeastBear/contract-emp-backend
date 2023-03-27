@@ -1,11 +1,11 @@
 module.exports = (sequelize, DataTypes) => {
     const Archive = sequelize.define("archive", {
         employee_id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             allowNull: false
         },
         contract_id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             allowNull: false
         },
         department1: {

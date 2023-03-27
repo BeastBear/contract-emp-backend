@@ -11,6 +11,12 @@ const Company = db.company
     }
     
     const { employee_id, contract_id, department1, department2, department3, remark } = req.body;
+    if (isNaN(employee_id)) {
+      return res.status(402).json({ message: "Employee_id should be a number!" });
+    }
+    if (isNaN(contract_id)) {
+      return res.status(404).json({ message: "Contract_id should be a number!" });
+    }
     
     const newArchive = new Archive({ employee_id, contract_id, department1, department2, department3, remark })
     const saveArchive = await newArchive.save().catch((err) => {
@@ -45,13 +51,15 @@ const Company = db.company
   };  
 
   const getArchiveWithAllParams = async ( req , res ) => {
-    if (req.user.role !== "admin" && req.user.role !== "card") {
-      return res.status(401).json({ message: "Unauthorized" });
+    const whereClause = {};
+    if (req.user.role === "company") {
+      whereClause['$contract.company_id$'] = req.user.company_id;
+      whereClause['$employee.createby$'] = req.user.company_id;
     }
     
-    const { employee_id, contract_id, department1, department2, department3, remark, company_id} = req.query;
 
-    const whereClause = {};
+    const { employee_id, contract_id, department1, department2, department3, remark, company_id } = req.query;
+    
     if (employee_id) {
         whereClause.employee_id = employee_id;
     }
@@ -71,8 +79,8 @@ const Company = db.company
         whereClause.remark = remark;
     }
     if (company_id) {
-        whereClause['$contract.company.id$'] = company_id;
-    }      
+      whereClause['$contract.company.id$'] = company_id;
+  }    
 
     const archives = await Archive.findAll({
       where: whereClause,
@@ -102,8 +110,19 @@ const Company = db.company
       return res.status(404).json({ message: "Archive not found"})
     }
 
-    archive.employee_id = employee_id || archive.employee_id;
-    archive.contract_id = contract_id || archive.contract_id;
+    if (employee_id) {
+      if (isNaN(employee_id)) {
+        return res.status(403).json({ message: "Employee_id should be a number!" });
+      }
+      archive.employee_id = employee_id || archive.employee_id;
+    }
+    if (contract_id) {
+      if (isNaN(contract_id)) {
+        return res.status(403).json({ message: "Contract_id should be a number!" });
+      }
+      archive.contract_id = employee_id || archive.contract_id;
+    }
+    
     archive.department1 = department1 || archive.department1;
     archive.department2 = department2 || archive.department2;
     archive.department3 = department3 || archive.department3;

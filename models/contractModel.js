@@ -1,15 +1,15 @@
 module.exports = (sequelize, DataTypes) => {
     const Contract = sequelize.define("contract", {
         number: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             allowNull: false
         },
         start_date: {
-            type: DataTypes.DATE,
+            type: DataTypes.DATEONLY,
             allowNull: false
         },
         end_date: {
-            type: DataTypes.DATE,
+            type: DataTypes.DATEONLY,
             allowNull: false
         },
         company_id: {

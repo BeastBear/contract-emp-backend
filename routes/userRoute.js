@@ -10,6 +10,7 @@ userRouter.get('/', passport.authenticate("jwt" , { session: false }), userContr
 
 userRouter.get('/search', passport.authenticate("jwt" , { session: false }), userController.getUserWithAllParams)
 userRouter.put('/:id', passport.authenticate("jwt", { session: false }), userController.updateUser)
+userRouter.put('/', passport.authenticate("jwt", { session: false }), userController.updateUser)
 userRouter.delete('/:id', passport.authenticate("jwt", { session: false }), userController.deleteUser)
 
 module.exports = userRouter

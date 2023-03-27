@@ -198,8 +198,11 @@ const registerUser = async (req, res) => {
     let user;
   
     if (req.user.role === "card" || req.user.role === "admin") {
+      if (!req.params.id) {
+        return res.status(405).json({ message: "Update user needs to provide an id" });
+      }
       user = await User.findOne({ where: { id: req.params.id } });
-    } else {
+    } else if (req.user.role === "company") {
       user = await User.findOne({ where: { id: req.user.id } });
     }
   

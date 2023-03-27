@@ -1,6 +1,7 @@
 const db = require("../models");
 
 const Company = db.company;
+const User = db.user;
 
 const createCompany = async (req, res) => {
   if (req.user.role !== "admin" && req.user.role !== "card") {
@@ -43,7 +44,33 @@ const createCompany = async (req, res) => {
     return res.status(200).json({ message: "Company created successfully!" });
 };
 
-  
+const getInfoCompany = async (req, res) => {
+  try {
+    // return unauthorized message for admin and card users
+    if (req.user.role === "admin" || req.user.role === "card") {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    // find the user's company based on their id
+    const user = await User.findOne({ where: { id: req.user.id } });
+    const companyId = user.company_id;
+
+    // find the company info based on the company id
+    const company = await Company.findOne({ where: { id: companyId } });
+
+    if (!company) {
+      return res.status(404).json({ message: "Company not found" });
+    }
+
+    // return the company info
+    return res.json(company);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+
   const getAllCompanies = async (req, res) => {
     if (req.user.role !== "admin" && req.user.role !== "card") {
       return res.status(401).json({ message: "Unauthorized" });
@@ -82,16 +109,10 @@ const createCompany = async (req, res) => {
 
   const updateCompany = async (req, res) => {
     const { name, address, telephone } = req.body;
-  
-    // If user is not an admin or card, they can only update their own company
-    if (
-      req.user.role !== "admin" &&
-      req.user.role !== "card" &&
-      req.user.company_id !== parseInt(req.params.id)
-    ) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-  
+
+    // If user is a company user, don't use req.params.id
+    const companyId = req.user.role === "company" ? req.user.company_id : req.params.id;
+
     const alreadyExistsCompany = await Company.findOne({
       where: { name },
     }).catch((err) => {
@@ -99,12 +120,12 @@ const createCompany = async (req, res) => {
     });
   
     if (alreadyExistsCompany) {
-      if (alreadyExistsCompany.id !== parseInt(req.params.id)) {
+      if (alreadyExistsCompany.id !== companyId) {
         return res.status(402).json({ message: "Company already exists!" });
       }
     }
   
-    const company = await Company.findOne({ where: { id: req.params.id } });
+    const company = await Company.findOne({ where: { id: companyId } });
   
     if (!company) {
       return res.status(404).json({ message: "Company not found!" });
@@ -127,6 +148,7 @@ const createCompany = async (req, res) => {
   
     return res.status(200).json({ message: "Company updated successfully!" });
   };
+
    
     
 
@@ -150,6 +172,7 @@ const createCompany = async (req, res) => {
 module.exports = {
     createCompany,
     getAllCompanies,
+    getInfoCompany,
     getCompanyWithAllParams,
     updateCompany,
     deleteCompany

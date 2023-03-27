@@ -39,12 +39,16 @@ db.contract = require('./contractModel')(sequelize, DataTypes)
 db.employee = require('./employeeModel')(sequelize, DataTypes)
 db.user = require('./userModel')(sequelize, DataTypes)
 
-db.company.hasMany(db.contract, { foreignKey: "company_id" })
+db.company.hasMany(db.contract, { foreignKey: "company_id", as:"contract" })
+db.contract.belongsTo(db.company, {foreignKey: "company_id", as: "company"})
 db.company.hasMany(db.user, {foreignKey: "company_id", as:"users" })
 db.user.belongsTo(db.company, {foreignKey: "company_id", as:"company" })
 
-db.contract.belongsToMany(db.employee, {through: "archive", foreignKey:"contract_id" })
-db.employee.belongsToMany(db.contract, {through: "archive", foreignKey:"employee_id" })
+db.employee.belongsToMany(db.contract, { through: db.archive, foreignKey: 'employee_id' });
+db.contract.belongsToMany(db.employee, { through: db.archive, foreignKey: 'contract_id' });
+db.archive.belongsTo(db.employee, { foreignKey: 'employee_id' });
+db.archive.belongsTo(db.contract, { foreignKey: 'contract_id' });
+
 
 db.sequelize.sync({force: false})
 .then(() => {
