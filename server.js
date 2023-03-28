@@ -6,7 +6,7 @@ require("./auth/passport")
 const app = express()
 
 var corOptions = {
-    origin: 'https://localhost:8081'
+    origin: '*'
 }
 
 app.use(cors(corOptions))

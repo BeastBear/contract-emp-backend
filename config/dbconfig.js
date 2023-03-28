@@ -1,6 +1,7 @@
 require('dotenv').config({path: './config.env'})
 module.exports = {
     HOST: process.env.MYSQL_URL,
+    PORT: process.env.MYSQL_PORT,
     USER: process.env.MYSQL_USER,
     PASSWORD: process.env.MYSQL_PASSWORD,
     DB: process.env.MYSQL_DB,
