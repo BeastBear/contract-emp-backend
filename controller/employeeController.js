@@ -127,7 +127,7 @@ const updateEmployee = async (req, res) => {
   
   if (number) {
     if (isNaN(number)) {
-      return res.status(403).json({ message: "Telephone number should be a number!" });
+      return res.status(403).json({ message: "Number should be a number!" });
     }
       employee.number = number || employee.number;
   }

@@ -15,7 +15,7 @@ const Company = db.company
       return res.status(402).json({ message: "Employee_id should be a number!" });
     }
     if (isNaN(contract_id)) {
-      return res.status(404).json({ message: "Contract_id should be a number!" });
+      return res.status(402).json({ message: "Contract_id should be a number!" });
     }
     
     const newArchive = new Archive({ employee_id, contract_id, department1, department2, department3, remark })
@@ -58,8 +58,11 @@ const Company = db.company
     }
     
 
-    const { employee_id, contract_id, department1, department2, department3, remark, company_id } = req.query;
+    const { id, employee_id, contract_id, department1, department2, department3, remark, company_id } = req.query;
     
+    if (id) {
+      whereClause.id = id;
+    }
     if (employee_id) {
         whereClause.employee_id = employee_id;
     }
@@ -104,7 +107,7 @@ const Company = db.company
 
     const { employee_id, contract_id, department1, department2, department3, remark } = req.body;
     
-    const archive = await Archive.findOne({ where: {id: req.params.employee_id } })
+    const archive = await Archive.findOne({ where: {id: req.params.id } })
     
     if (!archive) {
       return res.status(404).json({ message: "Archive not found"})

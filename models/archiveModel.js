@@ -1,12 +1,17 @@
 module.exports = (sequelize, DataTypes) => {
     const Archive = sequelize.define("archive", {
+        id: {
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
+            primaryKey: true
+        },
         employee_id: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,   
         },
         contract_id: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
         },
         department1: {
             type: DataTypes.STRING,
