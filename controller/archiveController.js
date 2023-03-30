@@ -123,7 +123,7 @@ const Company = db.company
       if (isNaN(contract_id)) {
         return res.status(403).json({ message: "Contract_id should be a number!" });
       }
-      archive.contract_id = employee_id || archive.contract_id;
+      archive.contract_id = contract_id || archive.contract_id;
     }
     
     archive.department1 = department1 || archive.department1;

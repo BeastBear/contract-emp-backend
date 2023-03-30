@@ -82,7 +82,7 @@ const registerUser = async (req, res) => {
 
   const loginUser = async (req, res) => {
     const { login, password } = req.body
-    
+    console.log(login,password)
     let whereClause;
 
     if(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(login)) {
