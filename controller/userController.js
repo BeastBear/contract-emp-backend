@@ -81,6 +81,7 @@ const registerUser = async (req, res) => {
 };
 
   const loginUser = async (req, res) => {
+    console.log(req.body)
     const { login, password } = req.body
     console.log(login,password)
     let whereClause;
